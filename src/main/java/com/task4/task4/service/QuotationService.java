@@ -6,6 +6,7 @@ import com.task4.task4.domain.ParkingQuote;
 import com.task4.task4.domain.ParkingSpot;
 import com.task4.task4.util.ParkingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 import static com.task4.task4.util.Util.inRange;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class QuotationService {
@@ -25,12 +27,15 @@ public class QuotationService {
     private final ChargingService chargingService;
 
     public Optional<ParkingQuote> quoteParkingSpot(CarData data) {
-        Optional<ParkingFloor> floor = parkingSpotService.findFittingFloor(data);
+        Optional<ParkingFloor> floor = parkingSpotService.findFloorForCar(data);
         if (floor.isPresent()) {
             Optional<ParkingSpot> spot = floor.get().getParkingSpots().stream().filter(x -> !x.isOccupied()).findFirst();
             if (spot.isPresent()) {
-                return Optional.of(new ParkingQuote(pricingService.pricePerMinute(data, floor.get(), spot.get()),
-                        spot.get(), floor.get()));
+                ParkingSpot parkingSpot = spot.get();
+                BigDecimal pricePerMinute = pricingService.getPricePerMinute(data, floor.get(), parkingSpot);
+
+                log.info("Requested quote for car {}, price per minute is {} credits, assigned spot {}", data, pricePerMinute, parkingSpot.getId());
+                return Optional.of(new ParkingQuote(pricePerMinute, parkingSpot, floor.get()));
             }
         }
         return Optional.empty();
@@ -58,6 +63,8 @@ public class QuotationService {
             parkingFloor.setParkingCapacityLeft(percentageOfVacantSpots(parkingFloor));
 
             parkingSpotService.save(parkingFloor);
+
+            log.info("Parking spot {} was claimed for car {}", id, data);
         } else {
             throw new ParkingException("The spot is already claimed");
         }
@@ -73,12 +80,12 @@ public class QuotationService {
                 .orElseThrow(() -> new ParkingException("Can not claim this spot - it doesn't exist"));
 
         if (parkingSpot.isOccupied()) {
-            CarData carData = parkingSpot.getOccupiedBy();
+            CarData data = parkingSpot.getOccupiedBy();
 
-            BigDecimal totalPrice = pricingService.getTotalPrice(carData, parkingFloor, parkingSpot,
+            BigDecimal totalPrice = pricingService.getTotalPrice(data, parkingFloor, parkingSpot,
                     Duration.between(parkingSpot.getOccupiedSince(), LocalDateTime.now()));
 
-            chargingService.charge(totalPrice, carData);
+            chargingService.charge(totalPrice, data);
 
             parkingSpot.setOccupied(false);
             parkingSpot.setOccupiedBy(null);
@@ -86,11 +93,13 @@ public class QuotationService {
 
             parkingFloor.setParkingCapacityLeft(percentageOfVacantSpots(parkingFloor));
             parkingFloor.setWeightCapacityLeft(
-                    inRange(parkingFloor.getWeightCapacityLeft() + carData.getWeight(),
+                    inRange(parkingFloor.getWeightCapacityLeft() + data.getWeight(),
                             0.0, parkingFloor.getMaxTotalWeight())
             );
 
             parkingSpotService.save(parkingFloor);
+
+            log.info("Parking spot {} was unclaimed for car {}", id, data);
         }
     }
 

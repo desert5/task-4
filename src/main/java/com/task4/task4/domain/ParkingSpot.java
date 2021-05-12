@@ -19,11 +19,4 @@ public class ParkingSpot {
     public ParkingSpot(Long id) {
         this.id = id;
     }
-
-    public ParkingSpot(Long id, boolean occupied, LocalDateTime occupiedSince, CarData occupiedBy) {
-        this.id = id;
-        this.occupied = occupied;
-        this.occupiedSince = occupiedSince;
-        this.occupiedBy = occupiedBy;
-    }
 }

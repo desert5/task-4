@@ -23,10 +23,9 @@ public class ParkingSpotPersistenceService implements ParkingSpotService {
     private final ParkingSpotRepository parkingSpotRepository;
 
     @Override
-    public Optional<ParkingFloor> findFittingFloor(CarData data) {
+    public Optional<ParkingFloor> findFloorForCar(CarData data) {
         Optional<ParkingFloorEntity> floor = parkingFloorRepository.findFittingFloor(data.getHeight(), data.getWeight());
-        Optional<ParkingFloor> domainFloor = floor.map(it -> ParkingFloorEntityConverter.convert(it, parkingSpotRepository));
-        return domainFloor;
+        return floor.map(it -> ParkingFloorEntityConverter.convert(it, parkingSpotRepository));
     }
 
     @Override

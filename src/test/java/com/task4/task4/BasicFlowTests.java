@@ -19,7 +19,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-class Task4ApplicationTests {
+class BasicFlowTests {
 
 	@Autowired
 	private QuotationService quotationService;
