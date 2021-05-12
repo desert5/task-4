@@ -4,12 +4,17 @@ import com.task4.task4.domain.ParkingQuote;
 import com.task4.task4.rest.response.ParkingQuoteResponse;
 import com.task4.task4.service.QuotationService;
 import com.task4.task4.domain.CarData;
+import com.task4.task4.util.ParkingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequestMapping("/parking")
 @RequiredArgsConstructor
@@ -36,4 +41,11 @@ public class RestApi {
     private void unclaimSpot(@PathVariable("id") Long id) {
         quotationService.unclaim(id);
     }
+
+    @ExceptionHandler(value = {ParkingException.class})
+    protected ResponseEntity<?> handleConflict(RuntimeException ex, WebRequest request) {
+        log.error("Caught exception in REST API", ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
 }

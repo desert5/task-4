@@ -52,7 +52,7 @@ public class QuotationService {
                 .stream()
                 .filter(spot -> spot.getId().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Can not claim this spot - it doesn't exist"));
+                .orElseThrow(() -> new ParkingException("Can not claim this spot - it doesn't exist"));
 
         if (!parkingSpot.isOccupied()) {
             parkingSpot.setOccupied(true);

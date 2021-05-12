@@ -8,6 +8,7 @@ import com.task4.task4.persistence.entity.ParkingFloorEntity;
 import com.task4.task4.persistence.repository.ParkingFloorRepository;
 import com.task4.task4.persistence.repository.ParkingSpotRepository;
 import com.task4.task4.service.ParkingSpotService;
+import com.task4.task4.util.ParkingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class ParkingSpotPersistenceService implements ParkingSpotService {
     @Override
     public ParkingFloor getFloorBySpotId(Long id) {
         ParkingFloorEntity floorEntity = parkingSpotRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Can not find such spot id"))
+                .orElseThrow(() -> new ParkingException("Can not find such spot id"))
                 .getFloor();
         return ParkingFloorEntityConverter.convert(floorEntity, parkingSpotRepository);
     }
