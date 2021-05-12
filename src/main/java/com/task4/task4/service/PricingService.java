@@ -7,12 +7,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
 public class PricingService {
 
     public BigDecimal pricePerMinute(CarData data, ParkingFloor floor, ParkingSpot spot) {
+        return BigDecimal.TEN;
+    }
+
+    public BigDecimal getTotalPrice(CarData data, ParkingFloor floor, ParkingSpot spot, Duration timeOfUse) {
         return BigDecimal.TEN;
     }
 }

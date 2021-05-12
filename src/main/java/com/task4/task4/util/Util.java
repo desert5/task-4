@@ -7,4 +7,14 @@ public class Util {
         consumer.accept(receiver);
         return receiver;
     }
+
+    public static Double inRange(Double actual, Double lowerLimit, Double upperLimit) {
+        if (actual > lowerLimit && actual < upperLimit) {
+            return actual;
+        } else if (actual > upperLimit) {
+            return upperLimit;
+        } else {
+            return lowerLimit;
+        }
+    }
 }

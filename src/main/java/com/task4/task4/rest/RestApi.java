@@ -31,4 +31,9 @@ public class RestApi {
     private void claimSpot(@PathVariable("id") Long id, @RequestBody CarData data) {
         quotationService.claim(id, data);
     }
+
+    @DeleteMapping("/{id}/claim")
+    private void unclaimSpot(@PathVariable("id") Long id) {
+        quotationService.unclaim(id);
+    }
 }

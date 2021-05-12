@@ -2,11 +2,8 @@ package com.task4.task4.persistence.converter;
 
 import com.task4.task4.domain.ParkingFloor;
 import com.task4.task4.persistence.entity.ParkingFloorEntity;
-import com.task4.task4.persistence.entity.ParkingSpotEntity;
 import com.task4.task4.persistence.repository.ParkingSpotRepository;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.stream.Collectors;
 
 public class ParkingFloorEntityConverter {

@@ -14,6 +14,12 @@ public class ParkingSpotEntity {
 
     private boolean occupied;
 
+    private Long occupiedSince;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "CAR_DATA_ID")
+    private CarDataEntity occupiedBy;
+
     @ManyToOne
     @JoinColumn(name = "FLOOR_ID", nullable = false)
     private ParkingFloorEntity floor;
