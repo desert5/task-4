@@ -10,4 +10,5 @@ import java.math.BigDecimal;
 public class ParkingQuote {
     private BigDecimal pricePerMinute;
     private ParkingSpot parkingSpot;
+    private ParkingFloor parkingFloor;
 }

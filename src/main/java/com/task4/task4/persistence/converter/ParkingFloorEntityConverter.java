@@ -32,12 +32,8 @@ public class ParkingFloorEntityConverter {
         entity.setId(domain.getId());
         entity.setCeilingHeight(domain.getCeilingHeight());
         entity.setMaxTotalWeight(domain.getMaxTotalWeight());
-        entity.setWeightCapacityLeft(domain.getWeightCapacityLeft());
-        entity.setParkingCapacityLeft(domain.getParkingCapacityLeft());
+        entity.setWeightCapacityLeft(domain.getWeightCapacityLeft() == null ? domain.getMaxTotalWeight() : domain.getWeightCapacityLeft());
+        entity.setParkingCapacityLeft(domain.getParkingCapacityLeft() == null ? domain.getParkingSpots().size() : domain.getParkingCapacityLeft());
         return entity;
-    }
-
-    public static Collection<ParkingSpotEntity> convertSpots(ParkingFloor floor) {
-        return floor.getParkingSpots().stream().map(spot -> ParkingSpotEntityConverter.convert(spot, floor)).collect(Collectors.toList());
     }
 }

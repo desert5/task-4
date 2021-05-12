@@ -3,6 +3,7 @@ package com.task4.task4.persistence.service;
 import com.task4.task4.domain.CarData;
 import com.task4.task4.domain.ParkingFloor;
 import com.task4.task4.persistence.converter.ParkingFloorEntityConverter;
+import com.task4.task4.persistence.converter.ParkingSpotEntityConverter;
 import com.task4.task4.persistence.entity.ParkingFloorEntity;
 import com.task4.task4.persistence.repository.ParkingFloorRepository;
 import com.task4.task4.persistence.repository.ParkingSpotRepository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +41,10 @@ public class ParkingSpotPersistenceService implements ParkingSpotService {
     @Override
     public void save(ParkingFloor floor) {
         ParkingFloorEntity savedFloor = parkingFloorRepository.save(ParkingFloorEntityConverter.convert(floor));
-        parkingSpotRepository.saveAll(ParkingFloorEntityConverter.convertSpots(savedFloor));
+        parkingSpotRepository.saveAll(floor.getParkingSpots()
+                .stream()
+                .map(spot -> ParkingSpotEntityConverter.convert(spot, savedFloor))
+                .collect(Collectors.toList())
+        );
     }
 }

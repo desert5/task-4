@@ -22,7 +22,8 @@ public class QuotationService {
         if (floor.isPresent()) {
             Optional<ParkingSpot> spot = floor.get().getParkingSpots().stream().filter(x -> !x.isOccupied()).findFirst();
             if (spot.isPresent()) {
-                return Optional.of(new ParkingQuote(pricingService.pricePerMinute(data, floor.get(), spot.get()), spot.get()));
+                return Optional.of(new ParkingQuote(pricingService.pricePerMinute(data, floor.get(), spot.get()),
+                        spot.get(), floor.get()));
             }
         }
         return Optional.empty();
